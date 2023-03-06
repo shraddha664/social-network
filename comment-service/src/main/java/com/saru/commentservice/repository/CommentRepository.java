@@ -15,14 +15,12 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment,Long> {
 
-//    @Query("Select c FROM Comment c WHERE c.userId= :userId")
-//    Optional<Comment> findByUserId(@Param("userId") Long userId);
 
     @Transactional
     @Modifying
     @Query("Update Comment c SET c.content=:content WHERE c.userId=:userId AND c.commentId=:commentId")
     int updateCommentByCommentId(@Param("userId") Long userId, @Param("commentId") Long commentId, @Param("content") String content);
 
-    @Query("Select c From Comment Where c.postId=:postId")
+    @Query("Select c From Comment c Where c.postId=:postId")
     List<Comment> findCommentsByPostId(@Param("postId") Long postId);
 }
