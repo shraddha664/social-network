@@ -1,7 +1,9 @@
 package com.saru.postservice.controller;
 
+import com.saru.postservice.dto.CommentsResponse;
 import com.saru.postservice.dto.PostDto;
 import com.saru.postservice.exception.PostApplicationException;
+import com.saru.postservice.repository.PostRepository;
 import com.saru.postservice.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/posts")
 @RequiredArgsConstructor
 @Slf4j
 public class PostController {
+    private final PostRepository postRepository;
     private final WebClient.Builder webClientBuilder;
     private final PostService postService;
 
@@ -25,6 +30,11 @@ public class PostController {
         } else {
             return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping
+    public Boolean checkPostIdExistOrNot(@RequestParam Long postId){
+       return postService.checkPostIdExistOrNot(postId);
     }
 
     @GetMapping("/{userId}")
@@ -74,8 +84,12 @@ public class PostController {
         }
     }
 
-//    todo:fetch the post along with all the comments
 
+    @GetMapping("/user/{userId}/post/{postId}")
+    public ResponseEntity<Object> fetchComments(@PathVariable("userId") Long userId,@PathVariable("postId") Long postId){
+        List<CommentsResponse>commentsResponseList=postService.fetchComments(userId,postId);
+        return new ResponseEntity<>(commentsResponseList,HttpStatus.ACCEPTED);
 
+    }
 
 }

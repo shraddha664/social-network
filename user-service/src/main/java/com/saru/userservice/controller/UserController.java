@@ -4,6 +4,7 @@ import com.saru.userservice.dto.FriendListResponse;
 import com.saru.userservice.dto.UserRegisterDto;
 import com.saru.userservice.entity.User;
 import com.saru.userservice.exception.UserServiceNotFoundException;
+import com.saru.userservice.repository.UserRepository;
 import com.saru.userservice.service.UserService;
 import com.saru.userservice.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,9 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
-// todo :   private PasswordEncoder encoder;
 
     private final PasswordUtil passwordUtil;
+    private final UserRepository userRepository;
 
     @PostMapping("/registration")
     public ResponseEntity<String> registerUser(@RequestBody UserRegisterDto userRegisterDto){
@@ -57,5 +58,7 @@ public class UserController {
     public ResponseEntity<List<FriendListResponse>> getAllFriendsByUserId(@PathVariable("userId") Long userId) throws UserServiceNotFoundException {
         return new ResponseEntity<>(userService.getAllFriendsByUserId(userId),HttpStatus.OK);
     }
+
+
 
 }
